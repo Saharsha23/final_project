@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Poll Maker{% endblock %}
+
+{% block content %}
+<div class="gradient">
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Register</h3>
+                <form method="POST">
+                    <div class="mb-3">
+
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                    </div>
+                    <div class="mb-3">
+                        
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="mb-3">
+                        
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+                <div class="text-center mt-3">
+                    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
