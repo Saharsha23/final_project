@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Online Poll Maker{% endblock %}
+
+{% block content %}
+<div class="gradient">
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+</div>
+<div class="landing-container">
+    <div class="landing-content">
+        <h1 class="display-1 mb-4">Create & Share Polls Instantly</h1>
+        <p class="lead mb-5">Fast. Simple. Insightful.Make decisions easier with real-time polls that are easy to create and share.</p>
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle"></i> Create Poll
+        </a>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="feature-container">
+        <div class="feature-text">
+            <h3>Instant Polls, Instant Links</h3>
+            <p>Create a poll in seconds and share it with a single link—no sign-ups, no hassle!</p>
+        </div>
+        <div class="feature-image">
+            <img src="{{ url_for('static', filename='images/instant.jpg') }}" alt="Instant Polls" class="img-fluid rounded">
+        </div>
+    </div>
+
+    <div class="feature-container">
+        <div class="feature-text">
+            <h3>Live Results, Real-Time Insights</h3>
+            <p>Watch votes roll in live with dynamic updates. No need to refresh!</p>
+        </div>
+        <div class="feature-image">
+            <img src="{{ url_for('static', filename='images/liveresults.jpg') }}" alt="Live Results" class="img-fluid rounded">
+        </div>
+    </div>
+
+    <div class="feature-container">
+        <div class="feature-text">
+            <h3>Visualized Data at a Glance</h3>
+            <p>See results in different formats—bar graphs, pie charts, and more—for clear insights.</p>
+        </div>
+        <div class="feature-image">
+            <img src="{{ url_for('static', filename='images/multiple formats.jpg') }}" alt="Multiple Formats" class="img-fluid rounded">
+        </div>
+    </div>
+
+    <div class="feature-container">
+        <div class="feature-text">
+            <h3>100% Secure & Anonymous</h3>
+            <p>No personal data required. Every vote counts fairly and privately.</p>
+        </div>
+        <div class="feature-image">
+            <img src="{{ url_for('static', filename='images/security.jpg') }}" alt="Security" class="img-fluid rounded">
+        </div>
+    </div>
+
+    <div class="feature-container">
+        <div class="feature-text">
+            <h3>Works Everywhere, Anytime</h3>
+            <p>On mobile, tablet, or desktop—our polls work seamlessly on any device.</p>
+        </div>
+        <div class="feature-image">
+            <img src="{{ url_for('static', filename='images/anywhere.jpg') }}" alt="Works Everywhere" class="img-fluid rounded">
+        </div>
+    </div>
+
+    <div class="feature-container">
+        <div class="feature-text">
+            <h3>Free & Effortless</h3>
+            <p>No technical skills needed. Just create, share, and analyze in seconds!</p>
+        </div>
+        <div class="feature-image">
+            <img src="{{ url_for('static', filename='images/easy.jpg') }}" alt="Easy to Use" class="img-fluid rounded">
+        </div>
+    </div>
+</div>
+{% endblock %} 

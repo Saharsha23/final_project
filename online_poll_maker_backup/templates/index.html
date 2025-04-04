@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Poll Maker{% endblock %}
+
+{% block content %}
+<div class="gradient">
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+</div>
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">Create a New Poll</h5>
+                <p class="card-text">Create your own poll and share it with others.</p>
+                <a href="{{ url_for('create_poll') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create Poll
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">My Polls</h5>
+                <p class="card-text">View and manage your created polls.</p>
+                <a href="{{ url_for('my_polls') }}" class="btn btn-primary">
+                    <i class="bi bi-list-ul"></i> My Polls
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">Vote on a Poll</h5>
+                <p class="card-text">Paste a poll link to vote</p>
+                <div class="input-group mb-3 justify-content-center">
+                    <input type="text" class="form-control" id="pollLink" placeholder="Paste poll link here" style="max-width: 400px;">
+                    <button class="btn btn-primary" onclick="goToPoll()">
+                        <i class="bi bi-box-arrow-right"></i> Go to Poll
+                    </button>
+                </div>
+                <small class="text-muted">You can paste any poll link to vote on it</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h2>Your Polls</h2>
+        {% if polls %}
+            <div class="list-group">
+                {% for poll in polls %}
+                <a href="{{ url_for('view_poll', poll_id=poll.id) }}" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ poll.title }}</h5>
+                        <small>{{ poll.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                    <p class="mb-1">{{ poll.description }}</p>
+                    <small>{{ poll.options|length }} options</small>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                You haven't created any polls yet. Click "Create Poll" to get started!
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function goToPoll() {
+    const linkInput = document.getElementById('pollLink');
+    const link = linkInput.value.trim();
+    
+    if (!link) {
+        alert('Please paste a poll link');
+        return;
+    }
+    
+    // Extract poll ID from the URL
+    const pollIdMatch = link.match(/\/poll\/(\d+)/);
+    if (pollIdMatch) {
+        const pollId = pollIdMatch[1];
+        window.location.href = `/poll/${pollId}`;
+    } else {
+        alert('Invalid poll link. Please make sure you pasted a valid poll URL.');
+    }
+}
+
+// Remove the automatic navigation on paste
+document.getElementById('pollLink').addEventListener('paste', function(e) {
+    // Let the paste event complete without automatically navigating
+});
+</script>
+{% endblock %} 

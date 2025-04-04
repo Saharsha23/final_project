@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}{{ poll.title }} - Poll Maker{% endblock %}
+
+{% block content %}
+<div class="gradient">
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+    <div class="gradient-child"></div>
+</div>
+<div class="container mt-5 pt-5">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">{{ poll.title }}</h2>
+            <p class="card-text">{{ poll.description }}</p>
+            
+            {% if current_user.is_authenticated and current_user.id == poll.user_id %}
+            <div class="mb-3">
+                <label class="form-label">Share this poll:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="shareLink" 
+                           value="{{ url_for('view_poll', poll_id=poll.id, _external=True) }}" 
+                           readonly
+                           aria-label="Poll share link">
+                    <button class="btn btn-outline-primary" onclick="copyLink()">Copy Link</button>
+                </div>
+                <small class="text-muted">Share this link with others. They will need to login to vote.</small>
+            </div>
+            {% endif %}
+            
+            {% if has_voted %}
+            <div class="vote-success-message">
+                <div class="success-icon">
+                    <i class="material-icons">check_circle</i>
+                </div>
+                <h3>Vote Recorded Successfully!</h3>
+                <p>Thank you for participating in this poll.</p>
+                <div class="vote-details">
+                    <p>Your vote has been counted and will be reflected in the results.</p>
+                </div>
+            </div>
+            {% else %}
+            <form method="POST" action="{{ url_for('vote', poll_id=poll.id) }}">
+                <div class="mb-3">
+                    <label class="form-label">Select your vote:</label>
+                    <div class="d-grid gap-3">
+                        {% for option in poll.options %}
+                        <div class="form-check">
+                            <input class="btn-check" type="radio" 
+                                   name="option" 
+                                   id="option{{ option.id }}" 
+                                   value="{{ option.id }}" 
+                                   required>
+                            <label class="btn btn-outline-primary w-100 text-start" for="option{{ option.id }}">
+                                <span class="material-icons me-2">radio_button_unchecked</span>
+                                {{ option.text }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100">Submit Vote</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if current_user.is_authenticated and current_user.id == poll.user_id %}
+    <div class="row mt-4 justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h4 class="card-title">Results (Admin View)</h4>
+                    <div class="mb-3">
+                        <label class="form-label">Select Chart Type:</label>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary active" data-chart-type="pie">Pie Chart</button>
+                            <button type="button" class="btn btn-outline-primary" data-chart-type="bar">Bar Chart</button>
+                            <button type="button" class="btn btn-outline-primary" data-chart-type="doughnut">Doughnut</button>
+                            <button type="button" class="btn btn-outline-primary" data-chart-type="line">Line Chart</button>
+                        </div>
+                    </div>
+                    <canvas id="resultsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% block scripts %}
+<script>
+/* eslint-disable */
+function copyLink() {
+    const shareLink = document.getElementById('shareLink');
+    shareLink.select();
+    document.execCommand('copy');
+    alert('Link copied to clipboard!');
+}
+document.addEventListener('DOMContentLoaded', function() {
+    {% if current_user.is_authenticated and current_user.id == poll.user_id %}
+    const ctx = document.getElementById('resultsChart').getContext('2d');
+    const options = [
+        {% for option in poll.options %}
+        {
+            text: "{{ option.text }}",
+            votes: {{ option.votes|length }}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    let currentChart = null;
+
+    function createChart(type) {
+        if (currentChart) {
+            currentChart.destroy();
+        }
+
+        const chartData = {
+            labels: options.map(option => option.text),
+            datasets: [{
+                label: 'Votes',
+                data: options.map(option => option.votes),
+                backgroundColor: [
+                    '#3498db',
+                    '#2ecc71',
+                    '#e74c3c',
+                    '#f1c40f',
+                    '#9b59b6',
+                    '#1abc9c',
+                    '#d35400',
+                    '#34495e'
+                ],
+                borderColor: '#fff',
+                borderWidth: 2
+            }]
+        };
+
+        const chartOptions = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        };
+
+        if (type === 'bar' || type === 'line') {
+            chartOptions.scales = {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            };
+        }
+
+        currentChart = new Chart(ctx, {
+            type: type,
+            data: chartData,
+            options: chartOptions
+        });
+    }
+
+    // Initialize with pie chart
+    createChart('pie');
+
+    // Add click handlers for chart type buttons
+    document.querySelectorAll('[data-chart-type]').forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            document.querySelectorAll('[data-chart-type]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Add active class to clicked button
+            this.classList.add('active');
+            // Create new chart with selected type
+            createChart(this.dataset.chartType);
+        });
+    });
+    {% endif %}
+});
+</script>
+{% endblock %}
+{% endblock %} 
